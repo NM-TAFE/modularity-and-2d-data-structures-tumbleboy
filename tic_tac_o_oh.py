@@ -37,3 +37,8 @@ while True:
             break
         else:
             print("Invalid move, try again.")
+
+
+array = [[0, 1, 2],
+         [0, 1, 2],
+         [0, 1, 2]]
