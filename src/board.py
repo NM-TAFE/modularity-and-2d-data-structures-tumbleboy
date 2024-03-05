@@ -35,8 +35,11 @@ class Board:
                 row_index += 1
 
     def make_move(self, players) -> None:
+        # count the empty spaces left, used to assign a new player each turn
+        empty_space_count = sum(row.count(" ") for row in self.grid)
+
         while True:
-            player = players[0] if self.grid.count(" ") % 2 == 1 else players[1]
+            player = players[0] if empty_space_count % 2 == 1 else players[1]
             move = input("Next move for player " + player + " (0-" + str(self.count) + "): ")
             if self.move_is_valid(move):
                 # this allows us to get 1 number from the user and calculate the row and col index's
@@ -50,8 +53,34 @@ class Board:
                 print("Invalid move, try again.")
 
     def move_is_valid(self, move) -> bool:
-        if move.isdigit() and 0 <= int(move) <= self.count:
+        if (move.isdigit() and
+                0 <= int(move) <= self.count and
+                self.space_is_empty(move)):
             return True
         else:
             return False
 
+    def space_is_empty(self, move) -> bool:
+        row_index = (int(move)) // self.width
+        col_index = (int(move)) % self.width
+        if self.grid[row_index][col_index] == " ":
+            return True
+        else:
+            return False
+
+    def get_winner(self):
+        return self.has_horizontal_winner()
+
+    def has_vertical_winner(self):
+        ...
+
+    def has_horizontal_winner(self):
+        win_conditions = (0, 1, 2)
+        for row in self.grid:
+            if row[win_conditions[0]] == row[win_conditions[1]] == row[win_conditions[2]] != " ":
+                self.print_board()
+                print(f"Player {row[win_conditions[0]]} has won!")
+                exit(0)
+
+    def has_diagonal_winner(self):
+        ...
