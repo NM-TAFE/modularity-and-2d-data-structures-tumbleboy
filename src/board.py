@@ -69,10 +69,21 @@ class Board:
             return False
 
     def get_winner(self):
-        return self.has_horizontal_winner()
+        return self.has_horizontal_winner() or self.has_vertical_winner()
 
     def has_vertical_winner(self):
-        ...
+        if self.grid[0][0] == self.grid[1][0] == self.grid[2][0] != " ":
+            self.print_board()
+            print(f"Player {self.grid[0][0]} has won!")
+            exit(0)
+        elif self.grid[0][1] == self.grid[1][1] == self.grid[2][1] != " ":
+            self.print_board()
+            print(f"Player {self.grid[0][1]} has won!")
+            exit(0)
+        elif self.grid[0][2] == self.grid[1][2] == self.grid[2] != " ":
+            self.print_board()
+            print(f"Player {self.grid[0][2]} has won!")
+            exit(0)
 
     def has_horizontal_winner(self):
         win_conditions = (0, 1, 2)
