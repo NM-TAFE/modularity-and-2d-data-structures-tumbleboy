@@ -6,7 +6,9 @@ class Board:
         self.count = (height * width) - 1 # get the total count of game squares generated
 
     @staticmethod
-    def create_2d_grid(height, width) -> list[list[str]]:
+    def create_2d_grid(height, width) -> list[list[str]] | None:
+        if height and width < 3:
+            return None
         grid = []
         for i in range(height):
             grid.append([])
@@ -37,6 +39,11 @@ class Board:
     def make_move(self, players) -> None:
         # count the empty spaces left, used to assign a new player each turn
         empty_space_count = sum(row.count(" ") for row in self.grid)
+
+        # check for a tie
+        if empty_space_count == 0:
+            print("Game is tie.")
+            exit(0)
 
         while True:
             player = players[0] if empty_space_count % 2 == 1 else players[1]
@@ -80,7 +87,7 @@ class Board:
             self.print_board()
             print(f"Player {self.grid[0][1]} has won!")
             exit(0)
-        elif self.grid[0][2] == self.grid[1][2] == self.grid[2] != " ":
+        elif self.grid[0][2] == self.grid[1][2] == self.grid[2][2] != " ":
             self.print_board()
             print(f"Player {self.grid[0][2]} has won!")
             exit(0)
