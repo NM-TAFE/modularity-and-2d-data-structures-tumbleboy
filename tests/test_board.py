@@ -17,8 +17,7 @@ class TestBoard(unittest.TestCase):
     def test_invalid_grid_creation(self):
         height = 2
         width = 2
-        invalid_board = board.Board(height, width)
-        self.assertIsNone(invalid_board.grid)
+        self.assertRaises(Exception, lambda: board.Board(height, width))
 
 
 if __name__ == '__main__':
