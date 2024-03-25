@@ -10,34 +10,12 @@ class Board:
         if height < 3 or width < 3:
             raise Exception("Invalid size, board must be at least 3x3")
 
-        # Change into list comprehension, line 45
-        grid = []
-        for i in range(height):
-            grid.append([])
-            for j in range(width):
-                grid[i].append(" ")
-        return grid
+        if height > 10 or width > 10:
+            raise Exception("Invalid size, board max size is 10x10")
 
-    def print_board(self) -> None:
-        last_row = self.height - 1
-        last_col = self.width - 1
-        row_index = 0
-        for row in self.grid:
-            col_index = 0
-            # " | ".join([row])
-            for col in row:
-                # checks to see if we are at the last column, if so then don't print '|'
-                if col_index == last_col:
-                    print(col)
-                    break
-                else:
-                    print(col, end=" | ")
-                    col_index += 1
-            if row_index == last_row:
-                break
-            else:
-                print("---" * self.width)
-                row_index += 1
+        # create grid
+        grid = [[" "for _ in range(width)] for _ in range(height)]
+        return grid
 
     def space_is_empty(self, move) -> bool:
         row_index = (int(move)) // self.width
@@ -51,28 +29,35 @@ class Board:
         return self.has_horizontal_winner() or self.has_vertical_winner() or self.has_diagonal_winner()
 
     def has_vertical_winner(self):
-        if self.grid[0][0] == self.grid[1][0] == self.grid[2][0] != " ":
-            self.print_board()
-            return f"Player {self.grid[0][0]} has won!"
-        elif self.grid[0][1] == self.grid[1][1] == self.grid[2][1] != " ":
-            self.print_board()
-            return f"Player {self.grid[0][1]} has"
-        elif self.grid[0][2] == self.grid[1][2] == self.grid[2][2] != " ":
-            self.print_board()
-            return f"Player {self.grid[0][2]} has won!"
+        for col in range(self.width):
+            # if there are any empty spaces in the first row, continue to next col
+            if self.grid[0][col] == " ":
+                continue
+
+            # create a set by looping through each row, looking at the current col index
+            if len(set(row[col] for row in self.grid)) == 1:
+                return f"Player {self.grid[0][col]} won"
 
     def has_horizontal_winner(self) -> str:
-        win_conditions = (0, 1, 2)
-        for row in self.grid:
-            if row[win_conditions[0]] == row[win_conditions[1]] == row[win_conditions[2]] != " ":
-                self.print_board()
-                return f"Player {row[win_conditions[0]]} has won!"
+        for row in range(self.height):
+            # if there are any empty spaces left, continue to next row
+            if self.grid[row][0] == " ":
+                continue
+
+            # use set to store each character in row
+            # if set 1 it only contains 1 type of data, all nothing or one of the player pieces
+            if len(set(self.grid[row])) == 1:
+                return f"Player {self.grid[row][0]} won"
 
     def has_diagonal_winner(self) -> str:
-        if self.grid[0][0] == self.grid[1][1] == self.grid[2][2] != " ":
-            self.print_board()
-            return f"Player {self.grid[0][0]} has won!"
+        # checks if there is a player piece in top left corner
+        if self.grid[0][0] != " ":
+            if len(set(self.grid[i][i] for i in range(self.width))) == 1:
+                return f"Player {self.grid[0][0]} has won"
 
-        elif self.grid[2][0] == self.grid[1][1] == self.grid[0][2] != " ":
-            self.print_board()
-            return f"Player {self.grid[2][0]} has won!"
+        # checks if there is a player piece in bottom left corner
+        # use negative indexing to count from right side instead of left
+        if self.grid[-1][0] != " ":
+            # count from bottom row upwards
+            if len(set(self.grid[self.height - i - 1][i] for i in range(self.width))) == 1:
+                return f"Player {self.grid[-1][0]} has won!"

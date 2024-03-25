@@ -3,15 +3,18 @@ import board
 
 class Game:
     def __init__(self):
-        self.board = board.Board(1, 3)
+        self.height = 3
+        self.width = 3
+        self.board = board.Board(self.height, self.width)
         self.players = ["X", "O"]
 
     def play(self):
         while True:
-            self.board.print_board()
+            self.print_board()
             self.make_move(self.players)
             game_over = self.board.get_winner()
             if game_over:
+                self.print_board()
                 print(game_over)
                 exit(0)
 
@@ -39,6 +42,27 @@ class Game:
             else:
                 print("Invalid move, try again.")
 
+    def print_board(self) -> None:
+        last_row = self.board.height - 1
+        last_col = self.board.width - 1
+        row_index = 0
+        for row in self.board.grid:
+            col_index = 0
+            # " | ".join([row])
+            for col in row:
+                # checks to see if we are at the last column, if so then don't print '|'
+                if col_index == last_col:
+                    print(col)
+                    break
+                else:
+                    print(col, end=" | ")
+                    col_index += 1
+            if row_index == last_row:
+                break
+            else:
+                print("---" * self.board.width)
+                row_index += 1
+
     def move_is_valid(self, move) -> bool:
         if (move.isdigit() and
                 0 <= int(move) <= self.board.count and
@@ -49,4 +73,5 @@ class Game:
 
 
 game = Game()
-game.play()
+if __name__ == '__main__':
+    game.play()
